@@ -5,7 +5,7 @@
 // so uncomment the vm in script if you want to run the script.
 
 pragma solidity ^0.8.15;
-import {Script, console} from "../forge-std/Script.sol";
+import {Script, console} from "forge-std/Script.sol";
 import {HelperConfig} from "../script/HelperConfig.s.sol";
 import {VRFCoordinatorV2_5Mock} from "@chainlink/contracts/src/v0.8/vrf/mocks/VRFCoordinatorV2_5Mock.sol";
 import {LinkToken} from "../test/mocks/linkToken.sol";
@@ -53,7 +53,8 @@ contract fundSubscription is Script {
             ,
             uint256 subId,
             ,
-            address link
+            address link,
+
         ) = helperConfig.ActiveNetworkConfig();
         fundSub(vrfCoordinator, subId, link);
     }
@@ -92,24 +93,26 @@ contract fundSubscription is Script {
 contract AddConsumer is Script {
     function addconsumerUsingconfig(address raffle) public {
         HelperConfig helperConfig = new HelperConfig();
-        (, , address vrfCoordinator, , uint256 subId, , ) = helperConfig
+        (, , address vrfCoordinator, , uint256 subId, , ,uint256 deployerKey) = helperConfig
             .ActiveNetworkConfig();
-        addConsumer(raffle, vrfCoordinator, subId);
+        addConsumer(raffle, vrfCoordinator, subId, deployerKey);
     }
 
     function addConsumer(
         address raffle,
         address vrfCoordinator,
-        uint256 subId
+        uint256 subId,
+        uint256 deployerKey
+      
     ) public {
         console.log("adding consumer contract ", raffle);
         console.log("using vrfCoordinator ", vrfCoordinator);
         console.log("on chainId ", block.chainid);
-        // vm.startBroadcast();
+        vm.startBroadcast(deployerKey);
 
         VRFCoordinatorV2_5Mock(vrfCoordinator).addConsumer(subId, raffle);
 
-        // vm.startBroadcast();
+        vm.startBroadcast();
     }
 
     function run() external {

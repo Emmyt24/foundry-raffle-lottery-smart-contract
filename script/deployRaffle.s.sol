@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
 pragma solidity ^0.8.15;
 
-import {Script} from "../forge-std/Script.sol";
+import {Script} from "forge-std/Script.sol";
 import {Raffle} from "../src/Raffle.sol";
 import {HelperConfig} from "./HelperConfig.s.sol";
 import {CreateSubscription, fundSubscription, AddConsumer} from "../script/interaction.s.sol";
@@ -18,7 +18,8 @@ contract DeployRaffle is Script {
             bytes32 gasLane,
             uint256 subscriptionId,
             uint32 callbackGasLimit,
-            address link
+            address link,
+            uint256 deployerKey
         ) = helperConfig.ActiveNetworkConfig();
 
         if (subscriptionId == 0) {
@@ -48,10 +49,10 @@ contract DeployRaffle is Script {
         addConsumer.addConsumer(
             address(raffle),
             vrfCoordinator,
-            subscriptionId
+            subscriptionId,
+            deployerKey
         );
 
         return (raffle, helperConfig);
     }
 }
- 

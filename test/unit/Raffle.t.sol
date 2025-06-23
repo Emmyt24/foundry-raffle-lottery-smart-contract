@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.15;
 import {Raffle} from "../../src/Raffle.sol";
-import {Test, console} from "../../forge-std/Test.sol";
+import {Test, console} from "forge-std/Test.sol";
 import {DeployRaffle} from "../../script/deployRaffle.s.sol";
 import {HelperConfig} from "../../script/HelperConfig.s.sol";
 import {VRFCoordinatorV2_5Mock} from "@chainlink/contracts/src/v0.8/vrf/mocks/VRFCoordinatorV2_5Mock.sol";
-import {Vm} from "../../forge-std/Vm.sol";
+import {Vm} from "forge-std/Vm.sol";
 
 // import {CreateSubscription, fundSubscription, AddConsumer} from "../../script/interaction.s.sol";
 
@@ -23,15 +23,16 @@ contract Raffle_Test is Test {
     uint256 subscriptionId;
     uint32 callbackGasLimit;
     address link;
+    uint256 deployerKey;
 
     address public PLAYER = makeAddr("PLAYER");
     uint256 public constant STARTING_BALANCE = 10 ether;
 
     function setUp() external {
         // This setup prepares the test environment with a deployed Raffle contract and all necessary parameters.
-        // DeployRaffle deployer = new DeployRaffle();
-        // (raffle, helperConfig) = deployer.run();
-        helperConfig = new HelperConfig();
+        DeployRaffle deployer = new DeployRaffle();
+        (raffle, helperConfig) = deployer.run();
+        // helperConfig = new HelperConfig();
         (
             entranceFee,
             interval,
@@ -39,15 +40,16 @@ contract Raffle_Test is Test {
             gasLane,
             subscriptionId,
             callbackGasLimit,
-            link
+            link,
+            deployerKey
         ) = helperConfig.ActiveNetworkConfig();
 
-        subscriptionId = VRFCoordinatorV2_5Mock(vrfCoordinator)
-            .createSubscription();
-        VRFCoordinatorV2_5Mock(vrfCoordinator).fundSubscription(
-            subscriptionId,
-            2 ether
-        );
+        // subscriptionId = VRFCoordinatorV2_5Mock(vrfCoordinator)
+        //     .createSubscription();
+        // VRFCoordinatorV2_5Mock(vrfCoordinator).fundSubscription(
+        //     subscriptionId,
+        //     2 ether
+        // );
         raffle = new Raffle(
             entranceFee,
             interval,
@@ -83,10 +85,6 @@ contract Raffle_Test is Test {
         raffle.EnteredRaffle{value: entranceFee}();
         assert(PLAYER == raffle.getPlayersIndex(0));
     }
-
-    //  function testplayerResetToEmptyArray() public funded{
-    //     raffle.EnteredRaffle{value:entranceFee}();
-    //     raffle.fulfillRandomWords();
 
     function testPlayersLengthIncreaseWhenEntered() public funded {
         raffle.EnteredRaffle{value: entranceFee}();
