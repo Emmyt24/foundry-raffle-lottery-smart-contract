@@ -30,9 +30,9 @@ contract Raffle_Test is Test {
 
     function setUp() external {
         // This setup prepares the test environment with a deployed Raffle contract and all necessary parameters.
-        DeployRaffle deployer = new DeployRaffle();
-        (raffle, helperConfig) = deployer.run();
-        // helperConfig = new HelperConfig();
+        // DeployRaffle deployer = new DeployRaffle();
+        // (raffle, helperConfig) = deployer.run();
+        helperConfig = new HelperConfig();
         (
             entranceFee,
             interval,
@@ -44,12 +44,12 @@ contract Raffle_Test is Test {
             deployerKey
         ) = helperConfig.ActiveNetworkConfig();
 
-        // subscriptionId = VRFCoordinatorV2_5Mock(vrfCoordinator)
-        //     .createSubscription();
-        // VRFCoordinatorV2_5Mock(vrfCoordinator).fundSubscription(
-        //     subscriptionId,
-        //     2 ether
-        // );
+        subscriptionId = VRFCoordinatorV2_5Mock(vrfCoordinator)
+            .createSubscription();
+        VRFCoordinatorV2_5Mock(vrfCoordinator).fundSubscription(
+            subscriptionId,
+            2 ether
+        );
         raffle = new Raffle(
             entranceFee,
             interval,
