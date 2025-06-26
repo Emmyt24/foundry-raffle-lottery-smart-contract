@@ -192,9 +192,13 @@ contract Raffle_Test is Test {
         assert(entries.length > 1);
     }
 
+    ////////////////////////
+    ///fulfillRandomWords///
+    ///////////////////////
+
     function testFulfillRandomWordCanOnlybeCalledAfterPerformUpkeep(
         uint256 randomRequestId
-    ) public EnterWarpRoll {
+    ) public EnterWarpRoll skipFork {
         vm.expectRevert(VRFCoordinatorV2_5Mock.InvalidRequest.selector);
         VRFCoordinatorV2_5Mock(vrfCoordinator).fulfillRandomWords(
             randomRequestId,
@@ -202,6 +206,12 @@ contract Raffle_Test is Test {
         );
     }
 
+    modifier skipFork() {
+        if (block.chainid != 31337) {
+            return;
+        }
+        _;
+    }
     modifier funded() {
         vm.prank(PLAYER);
         vm.deal(PLAYER, STARTING_BALANCE);

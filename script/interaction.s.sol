@@ -93,8 +93,16 @@ contract fundSubscription is Script {
 contract AddConsumer is Script {
     function addconsumerUsingconfig(address raffle) public {
         HelperConfig helperConfig = new HelperConfig();
-        (, , address vrfCoordinator, , uint256 subId, , ,uint256 deployerKey) = helperConfig
-            .ActiveNetworkConfig();
+        (
+            ,
+            ,
+            address vrfCoordinator,
+            ,
+            uint256 subId,
+            ,
+            ,
+            uint256 deployerKey
+        ) = helperConfig.ActiveNetworkConfig();
         addConsumer(raffle, vrfCoordinator, subId, deployerKey);
     }
 
@@ -103,7 +111,6 @@ contract AddConsumer is Script {
         address vrfCoordinator,
         uint256 subId,
         uint256 deployerKey
-      
     ) public {
         console.log("adding consumer contract ", raffle);
         console.log("using vrfCoordinator ", vrfCoordinator);
@@ -112,7 +119,7 @@ contract AddConsumer is Script {
 
         VRFCoordinatorV2_5Mock(vrfCoordinator).addConsumer(subId, raffle);
 
-        vm.startBroadcast();
+        vm.stopBroadcast();
     }
 
     function run() external {

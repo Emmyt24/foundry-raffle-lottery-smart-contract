@@ -17,7 +17,8 @@ contract HelperConfig is Script {
         uint256 deployerKey;
     }
     NetworkConfig public ActiveNetworkConfig;
-    uint256 public constant DEFAULT_ANVIL_KEY = 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80;
+    uint256 public constant DEFAULT_ANVIL_KEY =
+        0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80;
 
     constructor() {
         if (block.chainid == 11155111) {
@@ -66,7 +67,7 @@ contract HelperConfig is Script {
                 subscriptionId: 0, // will update it later
                 callbackGasLimit: 5000000, //500,000
                 link: address(link),
-                deployerKey: vm.envUint("DEFAULT_ANVIL_KEY")
+                deployerKey: DEFAULT_ANVIL_KEY
             });
     }
 }
